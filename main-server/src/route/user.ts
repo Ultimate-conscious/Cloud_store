@@ -26,13 +26,13 @@ userRouter.post('/signup',async (req,res)=>{
             email: body.email
         }
     })
-    if(!existingUser){
+    if(existingUser){
         return res.status(411).json({
             message: "User with this email already exist"
         })
     }
     //pw hashing done
-    const hashedpw = bcrypt.hash(body.password,10);
+    const hashedpw =await bcrypt.hash(body.password,10);
     const user = await client.user.create({
         data: {
             ...body,
@@ -42,7 +42,7 @@ userRouter.post('/signup',async (req,res)=>{
 
     //get them a jwt
     const token = jwt.sign({
-        id: user.id,
+        userid: user.id,
         email: user.email
     },process.env.JWT_SECRET|| "")
 
@@ -88,7 +88,7 @@ userRouter.post('/signin',async (req,res)=>{
     })
     //get them a jwt
     const token = jwt.sign({
-        id: user.id,
+        userid: user.id,
         email: user.email
     },process.env.JWT_SECRET|| "")
     res.json({
