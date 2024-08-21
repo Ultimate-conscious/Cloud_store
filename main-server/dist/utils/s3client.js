@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getObjectURL = getObjectURL;
+exports.getUploadURL = getUploadURL;
 const client_s3_1 = require("@aws-sdk/client-s3");
 const s3_request_presigner_1 = require("@aws-sdk/s3-request-presigner");
 const s3Client = new client_s3_1.S3Client({
@@ -26,6 +27,17 @@ function getObjectURL(key) {
             Key: key
         });
         const url = yield (0, s3_request_presigner_1.getSignedUrl)(s3Client, command);
+        return url;
+    });
+}
+function getUploadURL(key, contentType) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const command = new client_s3_1.PutObjectCommand({
+            Bucket: 'ccbox-bucket',
+            Key: key,
+            ContentType: contentType
+        });
+        const url = yield (0, s3_request_presigner_1.getSignedUrl)(s3Client, command, { expiresIn: 60 * 60 });
         return url;
     });
 }
