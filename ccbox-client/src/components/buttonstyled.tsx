@@ -2,14 +2,14 @@ import { MouseEventHandler } from "react"
 
 interface buttonprops{
     title: string,
-    onClick: MouseEventHandler
+    handler: MouseEventHandler<HTMLButtonElement>
 }
 
-export function ButtonStyled({title,onClick}:buttonprops){
+export function ButtonStyled({title,handler}:buttonprops){
 
     return (
         <div>
-            <button onClick={onClick}>{title}</button>
+            <button onClick={handler}>{title}</button>
         </div>
     )
 }
