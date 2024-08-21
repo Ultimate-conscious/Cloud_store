@@ -37,7 +37,7 @@ function getUploadURL(key, contentType) {
             Key: key,
             ContentType: contentType
         });
-        const url = yield (0, s3_request_presigner_1.getSignedUrl)(s3Client, command, { expiresIn: 60 * 60 });
+        const url = yield (0, s3_request_presigner_1.getSignedUrl)(s3Client, command);
         return url;
     });
 }
