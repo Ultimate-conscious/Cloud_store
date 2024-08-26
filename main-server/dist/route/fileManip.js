@@ -14,9 +14,23 @@ const express_1 = require("express");
 const authMiddleware_1 = require("../utils/authMiddleware");
 const client_1 = require("@prisma/client");
 const s3client_1 = require("../utils/s3client");
-const client = new client_1.PrismaClient();
 exports.fileRouter = (0, express_1.Router)();
 exports.fileRouter.use(authMiddleware_1.authMiddleware);
+const client = new client_1.PrismaClient();
+exports.fileRouter.put('/uploadfile', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const body = req.body;
+    const url = yield (0, s3client_1.getUploadURL)(body.key, body.contentType);
+    res.json({
+        url
+    });
+}));
+exports.fileRouter.get('/getfile', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const body = req.body;
+    const url = yield (0, s3client_1.getObjectURL)(body.key);
+    return res.json({
+        url
+    });
+}));
 // fileRouter.post('/createfolder',async (req,res)=>{
 //     //check if any more auth checks are required
 //     const body = req.body;
@@ -35,21 +49,7 @@ exports.fileRouter.use(authMiddleware_1.authMiddleware);
 //         message: "Folder created successfully"
 //     })
 // })
-exports.fileRouter.put('/uploadfile', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const body = req.body;
-    const url = yield (0, s3client_1.getUploadURL)(body.key, body.contentType);
-    res.json({
-        url
-    });
-}));
 // fileRouter.delete('/deletefolder',(req,res)=>{
 // })
 // fileRouter.delete('/deletefile',(req,res)=>{
 // })
-exports.fileRouter.get('/getfile', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const body = req.body;
-    const url = yield (0, s3client_1.getObjectURL)(body.key);
-    return res.json({
-        url
-    });
-}));

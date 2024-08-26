@@ -3,6 +3,7 @@ import { signinSchema, signupSchema } from "../utils/zodSchemas";
 import { User,PrismaClient } from "@prisma/client";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { createRootFolder } from "../utils/rootfoldercreate";
 
 const client = new PrismaClient();
 
@@ -42,10 +43,12 @@ userRouter.post('/signup',async (req,res)=>{
 
     //get them a jwt
     const token = jwt.sign({
-        userid: user.id,
+        userId: user.id,
         email: user.email
     },process.env.JWT_SECRET|| "")
-
+    // creating a root folder
+    await createRootFolder(body,user.id);
+    
     return res.json({
         message: "User created succcessfully",
         token
@@ -88,11 +91,20 @@ userRouter.post('/signin',async (req,res)=>{
     })
     //get them a jwt
     const token = jwt.sign({
-        userid: user.id,
+        userId: user.id,
         email: user.email
     },process.env.JWT_SECRET|| "")
+
+    const folder = await client.folder.findFirst({
+        where: {
+            name: user.email,
+            userId: user.id
+        }
+    })
+
     res.json({
         token,
-        message: "User signin done!"
+        message: "User signin done!",
+        folderId: folder?.id
     })
 })

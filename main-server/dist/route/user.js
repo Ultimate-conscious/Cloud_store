@@ -18,6 +18,7 @@ const zodSchemas_1 = require("../utils/zodSchemas");
 const client_1 = require("@prisma/client");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const rootfoldercreate_1 = require("../utils/rootfoldercreate");
 const client = new client_1.PrismaClient();
 exports.userRouter = (0, express_1.Router)();
 exports.userRouter.get('/', (req, res) => {
@@ -48,9 +49,11 @@ exports.userRouter.post('/signup', (req, res) => __awaiter(void 0, void 0, void 
     });
     //get them a jwt
     const token = jsonwebtoken_1.default.sign({
-        userid: user.id,
+        userId: user.id,
         email: user.email
     }, process.env.JWT_SECRET || "");
+    // creating a root folder
+    yield (0, rootfoldercreate_1.createRootFolder)(body, user.id);
     return res.json({
         message: "User created succcessfully",
         token
@@ -84,11 +87,18 @@ exports.userRouter.post('/signin', (req, res) => __awaiter(void 0, void 0, void 
     });
     //get them a jwt
     const token = jsonwebtoken_1.default.sign({
-        userid: user.id,
+        userId: user.id,
         email: user.email
     }, process.env.JWT_SECRET || "");
+    const folder = yield client.folder.findFirst({
+        where: {
+            name: user.email,
+            userId: user.id
+        }
+    });
     res.json({
         token,
-        message: "User signin done!"
+        message: "User signin done!",
+        folderId: folder === null || folder === void 0 ? void 0 : folder.id
     });
 }));

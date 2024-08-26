@@ -9,7 +9,12 @@ function authMiddleware(req, res, next) {
     const token = req.headers.authorization || "";
     try {
         const result = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || "");
-        req.body = Object.assign(Object.assign({}, req.body), result);
+        //give better types later
+        req.body = Object.assign(Object.assign({}, req.body), { 
+            //@ts-ignore
+            userId: result.userId, 
+            //@ts-ignore
+            email: result.email });
     }
     catch (e) {
         return res.json({

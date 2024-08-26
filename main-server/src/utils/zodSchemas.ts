@@ -6,6 +6,8 @@ export const signupSchema = z.object({
     password: z.string().min(6)
 })
 
+export type signupSchemaType = z.infer<typeof signupSchema>;
+
 
 export const signinSchema = z.object({
     email: z.string().email(),
@@ -15,5 +17,12 @@ export const signinSchema = z.object({
 export const folderCreateSchema = z.object({
     name : z.string(),
     userId: z.number(),
-    parentId: z.number().optional()
+    parentId: z.number().optional(),
+    email: z.string().email()
+})
+
+export const getFoldersSchema = z.object({
+    userId: z.number(),
+    parentId: z.number(),
+    email: z.string().email()
 })
