@@ -3,13 +3,24 @@ import { ButtonStyled } from "../components/buttonstyled"
 import { InputBoxWithLabel } from "../components/inputbox-label"
 import { useNavigate } from "react-router-dom";
 import { signupState } from "../store/atoms/signupAtom";
+import axios from "axios";
+
+//const url = import.meta.env.REACT_APP_MAIN_SERVER_URL
 
 export function SignupPage(){
     const [state,setState] = useRecoilState(signupState);
     const navigate = useNavigate();
 
+    const url = import.meta.env.VITE_MAIN_SERVER_URL;
+
     return <div>
-        signup
+        
+        <div className="flex justify-center">
+            signup
+        </div>
+        <div className="flex justify-center">
+            <div className="flex flex-col">
+        
         <InputBoxWithLabel label="Full Name" placeholder="John Doe"  handler={(e)=>{
             setState({
                 ...state,
@@ -29,10 +40,12 @@ export function SignupPage(){
             })
         }}/>
         <ButtonStyled title="Signup" handler={async ()=>{
-            const response :any = await axios.post("http://localhost:3000/user/signup",state)
+            const response:any = await axios.post(`${url}/user/signup`,state)
             
             localStorage.setItem("token",response.data.token)
             navigate('/dashboard')
         }} />
+        </div>
+        </div>
     </div>
 }

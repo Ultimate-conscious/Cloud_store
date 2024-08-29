@@ -4,6 +4,7 @@ import { SignupPage } from "./pages/signup"
 import { LandingPage } from "./pages/landing"
 import { UserDashboard } from "./pages/userDashboard"
 import { RecoilRoot } from "recoil"
+import { UploadFile } from "./pages/uploadFile"
 
 
 
@@ -17,7 +18,8 @@ function App() {
             <Route path="/" element={<LandingPage/>}/>
             <Route path="/signin" element={<SigninPage/>}/>
             <Route path="/signup" element={<SignupPage/>}/>
-            <Route path="/dashboard" element={<UserDashboard/>}/>
+            <Route path="/dashboard/:folderId" element={<UserDashboard/>}/>
+            <Route path="/tp" element={<UploadFile/>}/>
           </Routes>
         </BrowserRouter>
       </RecoilRoot>

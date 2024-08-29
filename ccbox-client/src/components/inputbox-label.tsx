@@ -8,10 +8,10 @@ interface inputboxwithlabel {
 
 export function InputBoxWithLabel({label,placeholder,handler}:inputboxwithlabel){
     return (
-        <div>
+        <div className="py-1">
             <div>{label}</div>
-            <div>
-                <input type="text" placeholder={placeholder} onChange={handler}  />
+            <div >
+                <input className="py-1 px-2 border-2" type="text" placeholder={placeholder} onChange={handler}  />
             </div>
         </div>
     )
