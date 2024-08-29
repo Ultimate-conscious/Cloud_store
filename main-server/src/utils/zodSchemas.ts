@@ -23,6 +23,14 @@ export const folderCreateSchema = z.object({
 
 export const getFoldersSchema = z.object({
     userId: z.number(),
-    parentId: z.number(),
     email: z.string().email()
 })
+
+export const fileCreateSchema = z.object({
+    userId: z.number(),
+    email: z.string().email(),
+    folderId: z.number(),
+    contentType: z.string(),
+    name: z.string()
+})
+

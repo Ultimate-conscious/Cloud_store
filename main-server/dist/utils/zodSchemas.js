@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFoldersSchema = exports.folderCreateSchema = exports.signinSchema = exports.signupSchema = void 0;
+exports.fileCreateSchema = exports.getFoldersSchema = exports.folderCreateSchema = exports.signinSchema = exports.signupSchema = void 0;
 const zod_1 = __importDefault(require("zod"));
 exports.signupSchema = zod_1.default.object({
     name: zod_1.default.string(),
@@ -22,6 +22,12 @@ exports.folderCreateSchema = zod_1.default.object({
 });
 exports.getFoldersSchema = zod_1.default.object({
     userId: zod_1.default.number(),
-    parentId: zod_1.default.number(),
     email: zod_1.default.string().email()
+});
+exports.fileCreateSchema = zod_1.default.object({
+    userId: zod_1.default.number(),
+    email: zod_1.default.string().email(),
+    folderId: zod_1.default.number(),
+    contentType: zod_1.default.string(),
+    name: zod_1.default.string()
 });

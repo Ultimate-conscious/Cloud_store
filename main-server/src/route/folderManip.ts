@@ -9,8 +9,9 @@ folderRouter.use(authMiddleware);
 
 const client = new PrismaClient();
 
-folderRouter.get('/getfolders',async(req,res)=>{
+folderRouter.get('/getfolders/:parentId',async(req,res)=>{
     const body =  req.body;
+    const parentId = Number(req.params.parentId)
 
     const {success} = getFoldersSchema.safeParse(body);
 
@@ -22,12 +23,19 @@ folderRouter.get('/getfolders',async(req,res)=>{
 
     const folders = await client.folder.findMany({
         where:{
-            parentId: body.parentId,
+            parentId,
             userId: body.userId
         }
     })
+    const files = await client.file.findMany({
+        where:{
+            userId: body.userId,
+            folderId: body.parentId
+        }
+    })
     res.status(200).json({
-        folders
+        folders,
+        files
     })
 })
 

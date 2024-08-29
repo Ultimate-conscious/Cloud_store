@@ -7,6 +7,7 @@ export function authMiddleware(req:express.Request,res:express.Response,next:exp
     const token = req.headers.authorization|| "";
     try{
         const result  = jwt.verify(token,process.env.JWT_SECRET||"")
+
         //give better types later
         req.body = {
             ...req.body,

@@ -17,8 +17,10 @@ const zodSchemas_1 = require("../utils/zodSchemas");
 exports.folderRouter = (0, express_1.Router)();
 exports.folderRouter.use(authMiddleware_1.authMiddleware);
 const client = new client_1.PrismaClient();
-exports.folderRouter.get('/getfolders', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.folderRouter.get('/getfolders/:parentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
+    const parentId = Number(req.params.parentId);
+    console.log(parentId);
     const { success } = zodSchemas_1.getFoldersSchema.safeParse(body);
     if (!success) {
         return res.json({
@@ -27,12 +29,19 @@ exports.folderRouter.get('/getfolders', (req, res) => __awaiter(void 0, void 0, 
     }
     const folders = yield client.folder.findMany({
         where: {
-            parentId: body.parentId,
+            parentId,
             userId: body.userId
         }
     });
+    const files = yield client.file.findMany({
+        where: {
+            userId: body.userId,
+            folderId: body.parentId
+        }
+    });
     res.status(200).json({
-        folders
+        folders,
+        files
     });
 }));
 exports.folderRouter.post('/createfolder', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

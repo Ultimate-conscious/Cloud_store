@@ -2,6 +2,8 @@ import { Router } from "express";
 import { authMiddleware } from "../utils/authMiddleware";
 import { PrismaClient } from "@prisma/client";
 import { getObjectURL, getUploadURL } from "../utils/s3client";
+import { generateFileKey } from "../utils/generatefileKey";
+import { fileCreateSchema } from "../utils/zodSchemas";
 
 
 export const fileRouter = Router();
@@ -11,9 +13,35 @@ fileRouter.use(authMiddleware);
 const client = new PrismaClient();
 
 fileRouter.put('/uploadfile',async (req,res)=>{
-    const body = req.body;
 
-    const url = await getUploadURL(body.key,body.contentType)
+
+    ///////check this endpoint 
+    const body = req.body;
+    const {success} = fileCreateSchema.safeParse(body)
+    /*body = {
+        folderId,
+        name,
+        contentType
+    }*/
+   if(!success){
+        return res.json({
+            message: "Invalid request body!"
+        })
+   }
+
+    const key = await generateFileKey(body.folderId,body.userId);
+
+    const file = await client.file.create({
+        data:{
+            userId: body.userId,
+            folderId: body.folderId,
+            name: body.name,
+            key: (key + body.name),
+            contentType: body.contentType
+        }
+    })
+
+    const url = await getUploadURL(file.key,body.contentType)
 
     res.json({
         url
@@ -21,46 +49,39 @@ fileRouter.put('/uploadfile',async (req,res)=>{
     
 })
 
-fileRouter.get('/getfile',async(req,res)=>{
-    const body = req.body;
+// no need for /getfile convert it to /deletefile 
 
-    const url = await getObjectURL(body.key)
-
-    return res.json({
-        url
-    })
-    
-})
-
-// fileRouter.post('/createfolder',async (req,res)=>{
-
-//     //check if any more auth checks are required
+// fileRouter.get('/getfile',async(req,res)=>{
 //     const body = req.body;
+//     // {
+//     //     fileId,
+//     //     email,
+//     //     userId,
+//     // }
 
-//     const {success} = folderCreateSchema.safeParse(body);
-
-//     if(!success){
-//         return res.status(411).json({
-//             message: "Indavid inputs"
-//         })
-//     }
-
-//     const folder = await client.folder.create({
-//         data:{
-//             ...body
+//     const file = await client.file.findFirst({
+//         where:{
+//             userId: body.userId,
+//             id: body.fileId
 //         }
 //     })
-    
+
+//     const url = await getObjectURL(file?.key || '')
+
 //     return res.json({
-//         message: "Folder created successfully"
+//         url
+//     })
+    
+// })
+
+// fileRouter.get('/asd',async (req,res)=>{
+//     const body =  req.body;
+
+//     const path = await generateFileKey(body.id,body.userId)
+
+//     return res.json({
+//         path
 //     })
 
-// })
-
-// fileRouter.delete('/deletefolder',(req,res)=>{
-    
-// })
-// fileRouter.delete('/deletefile',(req,res)=>{
-    
 // })
 
