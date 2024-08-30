@@ -20,7 +20,6 @@ const client = new client_1.PrismaClient();
 exports.folderRouter.get('/getfolders/:parentId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const body = req.body;
     const parentId = Number(req.params.parentId);
-    console.log(parentId);
     const { success } = zodSchemas_1.getFoldersSchema.safeParse(body);
     if (!success) {
         return res.json({
