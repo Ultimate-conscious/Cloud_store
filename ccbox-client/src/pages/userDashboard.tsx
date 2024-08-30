@@ -4,13 +4,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRecoilState} from "recoil";
 import { FoldersState } from "../store/atoms/foldersAtom";
-import { FolderCard } from "../components/folderCard";
+import { FilesState } from "@/store/atoms/filesAtom";
+import { FolderHolder } from "@/components/folder-holder";
 
 
 export function UserDashboard(){
     const {folderId} = useParams();
     const [currfolderId,setFolderId] = useState(Number(folderId?.charAt(1)));
     const [folders,setFolders] = useRecoilState(FoldersState);
+    const [files,setFiles] = useRecoilState(FilesState)
 
     const url = import.meta.env.VITE_MAIN_SERVER_URL;
 
@@ -23,15 +25,16 @@ export function UserDashboard(){
         }).then(res=>{
             //@ts-ignore
             setFolders(res.data.folders)
+            //@ts-ignore
+            setFiles(res.data.files)
         })
     },[currfolderId])
 
     return (
         <div>
             <Appbar/>
-            <div className="flex justify-between">
-                {folders.map(folder=> <FolderCard key={folder.id} folder={folder} />)}
-            </div>
+            <FolderHolder things={folders}/>
+            <FolderHolder things={files}/>
             
         </div>
     )

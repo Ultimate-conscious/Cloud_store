@@ -7,6 +7,14 @@ export interface folderInterface{
     parentId: number,
     userId: number,
 }
+export interface fileInterface{
+    id: number      
+  name: string
+  key :string   
+  contentType:string
+  userId :number
+  folderId :number
+}
 
 export const FolderCard = ({folder}:{folder:folderInterface,})=>{
 
